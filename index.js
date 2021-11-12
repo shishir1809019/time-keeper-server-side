@@ -58,7 +58,7 @@ async function run() {
       res.json(result);
     });
 
-    //single services
+    //get api single watches
     app.get("/watch/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -66,7 +66,7 @@ async function run() {
       res.send(service);
     });
 
-    // //Post api for purchase and review
+    //Post api for purchase and review
     app.post("/purchase", async (req, res) => {
       const newPurchase = req.body;
       const result = await purchaseCollection.insertOne(newPurchase);
@@ -78,7 +78,7 @@ async function run() {
       res.json(result);
     });
 
-    //get api for my orders
+    //get api for my purchases
     app.get("/myPurchases/:email", async (req, res) => {
       console.log(req.params);
       const result = await purchaseCollection
@@ -87,26 +87,7 @@ async function run() {
       res.json(result);
     });
 
-    // //Update api for status
-
-    // app.put("/bookingStatus/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const updateDoc = {
-    //     $set: {
-    //       status: "confirmed",
-    //     },
-    //   };
-    //   const result = await bookingCollection.updateOne(
-    //     filter,
-    //     updateDoc,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
-
-    // // delete api
+    //delete api for cancel purchase by user
     app.delete("/purchase/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -115,6 +96,7 @@ async function run() {
       console.log(result);
       res.json(result);
     });
+    // delete api for delete products by admin
     app.delete("dashboard/watches/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -123,6 +105,7 @@ async function run() {
       console.log(result);
       res.json(result);
     });
+    // delete api for delete purchase by admin
     app.delete("/dashboard/purchase/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -130,23 +113,14 @@ async function run() {
       res.send(result);
     });
 
-    // //get api for manage all booking
-    // app.get("/allBookings", async (req, res) => {
-    //   const cursor = bookingCollection.find({});
-    //   const services = await cursor.toArray();
-    //   res.send(services);
-    // });
-
-    //add new service
+    //add new product by admin
     app.post("/dashboard/addProduct", async (req, res) => {
       const newUser = req.body;
       const result = await watchCollection.insertOne(newUser);
       res.send(result);
     });
 
-    //api for admin panel
-
-    // get api admin
+    // get api for confirm admin
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
@@ -157,20 +131,20 @@ async function run() {
       }
       res.json({ admin: isAdmin });
     });
-
+    //get api for show all purchases by admin
     app.get("/dashboard/allPurchases", async (req, res) => {
       const cursor = purchaseCollection.find({});
       const result = await cursor.toArray();
       res.json(result);
     });
 
-    //add to database(email-password)
+    //post api for add user info to database(email-password)
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
       res.json(result);
     });
-    //add to database (google sign-in)
+    //put api for add user info to database (google sign-in)
     app.put("/users", async (req, res) => {
       const user = req.body;
       const filter = { email: user.email };
@@ -179,6 +153,8 @@ async function run() {
       const result = await userCollection.updateOne(filter, updateDoc, options);
       res.json(result);
     });
+
+    //put api for update role in database user info for make admin
 
     app.put("/users/admin", verifyToken, async (req, res) => {
       const user = req.body;
@@ -201,7 +177,7 @@ async function run() {
       }
     });
 
-    //api for purchase status update
+    //put api for purchase status update
     app.put("/dashboard/purchaseStatus/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
